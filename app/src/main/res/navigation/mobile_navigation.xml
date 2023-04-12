@@ -32,4 +32,9 @@
         android:name="ru.mirea.vozhzhovea.mireaproject.DataFragment"
         android:label="fragment_data"
         tools:layout="@layout/fragment_data" />
+    <fragment
+        android:id="@+id/MusicTimer"
+        android:name="ru.mirea.vozhzhovea.mireaproject.MusicTimer"
+        android:label="fragment_worker_part"
+        tools:layout="@layout/fragment_music_timer" />
 </navigation>

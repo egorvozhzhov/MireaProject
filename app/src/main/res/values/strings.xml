@@ -12,6 +12,7 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="brouser">Brouser</string>
     <string name="data">Data</string>
+    <string name="worker">MusicTimer</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
