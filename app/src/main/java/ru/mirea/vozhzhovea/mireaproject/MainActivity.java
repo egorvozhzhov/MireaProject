@@ -1,6 +1,9 @@
 package ru.mirea.vozhzhovea.mireaproject;
 
+import android.content.Context;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.view.Menu;
 
@@ -13,6 +16,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import java.io.File;
 
 import ru.mirea.vozhzhovea.mireaproject.databinding.ActivityMainBinding;
 
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_brouser, R.id.nav_data, R.id.MusicTimer)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_brouser, R.id.nav_data, R.id.MusicTimer, R.id.sensore)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);

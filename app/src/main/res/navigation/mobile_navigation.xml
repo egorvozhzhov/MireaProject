@@ -37,4 +37,19 @@
         android:name="ru.mirea.vozhzhovea.mireaproject.MusicTimer"
         android:label="fragment_worker_part"
         tools:layout="@layout/fragment_music_timer" />
+    <fragment
+        android:id="@+id/sensore"
+        android:name="ru.mirea.vozhzhovea.mireaproject.Sensore"
+        android:label="fragment_sensore"
+        tools:layout="@layout/fragment_sensore" />
+    <fragment
+        android:id="@+id/audioRecorder"
+        android:name="ru.mirea.vozhzhovea.mireaproject.AudioRecorder"
+        android:label="fragment_audio_recorder"
+        tools:layout="@layout/fragment_audio_recorder" />
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="ru.mirea.vozhzhovea.mireaproject.CameraFragment"
+        android:label="fragment_camera"
+        tools:layout="@layout/fragment_camera" />
 </navigation>

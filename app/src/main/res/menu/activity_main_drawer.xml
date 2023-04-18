@@ -29,5 +29,17 @@
             android:id="@+id/MusicTimer"
             android:icon="@drawable/ic_menu_worker"
             android:title="@string/worker"/>
+        <item
+            android:id="@+id/sensore"
+            android:icon="@drawable/ic_menu_worker"
+            android:title="@string/sensore"/>
+        <item
+            android:id="@+id/audioRecorder"
+            android:icon="@drawable/ic_menu_recorder"
+            android:title="@string/audioRecorder"/>
+        <item
+            android:id="@+id/cameraFragment"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/camera"/>
     </group>
 </menu>
