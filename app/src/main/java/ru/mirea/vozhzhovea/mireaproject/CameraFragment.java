@@ -3,7 +3,9 @@ package ru.mirea.vozhzhovea.mireaproject;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,20 +56,11 @@ public class CameraFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    //SharedPreferences secureSharedPreferences = null;
     public CameraFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CameraFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static CameraFragment newInstance(String param1, String param2) {
         CameraFragment fragment = new CameraFragment();
         Bundle args = new Bundle();
@@ -92,6 +85,28 @@ public class CameraFragment extends Fragment {
         super.onCreate(savedInstanceState);
         binding = FragmentCameraBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("profile_info", Context.MODE_PRIVATE);;
+        String name = sharedPref.getString("NAME", "unknown");
+        String lastname = sharedPref.getString("LASTNAME", "unknown");
+        String phone= sharedPref.getString("PHONE", "unknown");
+        String mail = sharedPref.getString("MAIL", "unknown");
+        binding.edName.setText(name);
+        binding.edLastName.setText(lastname);
+        binding.edPhone.setText(phone);
+        binding.etMail.setText(mail);
+
+        binding.btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("NAME", binding.edName.getText().toString());
+                editor.putString("LASTNAME", binding.edLastName.getText().toString());
+                editor.putString("PHONE", binding.edPhone.getText().toString());
+                editor.putString("MAIL", binding.etMail.getText().toString());
+                editor.apply();
+            }
+        });
 
         int cameraPermissionStatus = ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA);
         int storagePermissionStatus = ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE);
@@ -159,4 +174,5 @@ public class CameraFragment extends Fragment {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED;
         }
     }
+
 }
