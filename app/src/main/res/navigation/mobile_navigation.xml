@@ -14,31 +14,36 @@
     <fragment
         android:id="@+id/nav_brouser"
         android:name="ru.mirea.vozhzhovea.mireaproject.WebViewFragment"
-        android:label="fragment_web_view"
+        android:label="Простейший браузер"
         tools:layout="@layout/fragment_web_view" />
     <fragment
         android:id="@+id/nav_data"
         android:name="ru.mirea.vozhzhovea.mireaproject.DataFragment"
-        android:label="fragment_data"
+        android:label="Информация о Nike"
         tools:layout="@layout/fragment_data" />
     <fragment
         android:id="@+id/MusicTimer"
         android:name="ru.mirea.vozhzhovea.mireaproject.MusicTimer"
-        android:label="fragment_worker_part"
+        android:label="Плеер"
         tools:layout="@layout/fragment_music_timer" />
     <fragment
         android:id="@+id/sensore"
         android:name="ru.mirea.vozhzhovea.mireaproject.Sensore"
-        android:label="fragment_sensore"
+        android:label="Сенсор температуры"
         tools:layout="@layout/fragment_sensore" />
     <fragment
         android:id="@+id/audioRecorder"
         android:name="ru.mirea.vozhzhovea.mireaproject.AudioRecorder"
-        android:label="fragment_audio_recorder"
+        android:label="Диктофон"
         tools:layout="@layout/fragment_audio_recorder" />
     <fragment
         android:id="@+id/cameraFragment"
         android:name="ru.mirea.vozhzhovea.mireaproject.CameraFragment"
-        android:label="fragment_camera"
+        android:label="Профиль с камерой"
         tools:layout="@layout/fragment_camera" />
+    <fragment
+        android:id="@+id/fileWorkFragment"
+        android:name="ru.mirea.vozhzhovea.mireaproject.FileWorkFragment"
+        android:label="fragment_file_work"
+        tools:layout="@layout/fragment_file_work" />
 </navigation>
