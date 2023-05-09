@@ -38,5 +38,19 @@
             android:id="@+id/fileWorkFragment"
             android:icon="@drawable/ic_menu_file"
             android:title="Work with file"/>
+
+        <item
+            android:id="@+id/loginFragment2"
+            android:icon="@drawable/ic_menu_account"
+            android:title="Account"/>
+
+        <item
+            android:id="@+id/temperatureFragment"
+            android:icon="@drawable/ic_menu_temp"
+            android:title="Weather"/>
+
+
+
+
     </group>
 </menu>

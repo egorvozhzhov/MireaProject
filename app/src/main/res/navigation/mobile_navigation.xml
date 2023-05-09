@@ -46,4 +46,15 @@
         android:name="ru.mirea.vozhzhovea.mireaproject.FileWorkFragment"
         android:label="fragment_file_work"
         tools:layout="@layout/fragment_file_work" />
+    <fragment
+        android:id="@+id/loginFragment2"
+        android:name="ru.mirea.vozhzhovea.mireaproject.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/temperatureFragment"
+        android:name="ru.mirea.vozhzhovea.mireaproject.TemperatureFragment"
+        android:label="fragment_temperature"
+        tools:layout="@layout/fragment_temperature" />
+
 </navigation>
