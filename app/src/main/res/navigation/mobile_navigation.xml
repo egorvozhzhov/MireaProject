@@ -56,5 +56,10 @@
         android:name="ru.mirea.vozhzhovea.mireaproject.TemperatureFragment"
         android:label="fragment_temperature"
         tools:layout="@layout/fragment_temperature" />
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="ru.mirea.vozhzhovea.mireaproject.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" />
 
 </navigation>

@@ -2,17 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission
-        android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- определение местонахождения устройства -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- хранение скаченных карт -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <application
         android:allowBackup="true"
@@ -23,12 +24,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MireaProject"
         tools:targetApi="31">
+        <activity
+            android:name=".mapAct"
+            android:exported="false" />
+
         <service
-            android:name=".PlayerService" android:enabled="true" android:exported="true" />
+            android:name=".PlayerService"
+            android:enabled="true"
+            android:exported="true" />
+
         <activity
             android:name=".Login"
             android:exported="true"
-            android:theme="@style/Theme.MireaProject.NoActionBar" >
+            android:theme="@style/Theme.MireaProject.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,6 +54,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="ru.mirea.vozhzhovea.mireaproject.fileprovider"
@@ -56,6 +65,5 @@
                 android:resource="@xml/paths" />
         </provider>
     </application>
-
 
 </manifest>

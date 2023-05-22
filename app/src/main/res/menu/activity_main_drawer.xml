@@ -49,6 +49,11 @@
             android:icon="@drawable/ic_menu_temp"
             android:title="Weather"/>
 
+        <item
+            android:id="@+id/mapFragment"
+            android:icon="@drawable/ic_menu_map"
+            android:title="Map"/>
+
 
 
 
