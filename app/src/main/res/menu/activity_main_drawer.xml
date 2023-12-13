@@ -54,6 +54,10 @@
             android:icon="@drawable/ic_menu_map"
             android:title="Map"/>
 
+        <item
+            android:id="@+id/appListFragment"
+            android:icon="@drawable/ic_menu_map"
+            android:title="AppList"/>
 
 
 

@@ -1,11 +1,23 @@
 package ru.mirea.vozhzhovea.mireaproject;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,26 +27,44 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Objects;
 
 import ru.mirea.vozhzhovea.mireaproject.databinding.ActivityLoginBinding;
+
 
 
 public class Login extends AppCompatActivity {
     private static final String TAG = Login.class.getSimpleName();
     private ActivityLoginBinding binding;
     private FirebaseAuth mAuth;
+    private LocationManager locationManager;
+    private String currentUserEmail;
+    public double Latitude;
+    public double Longitude;
+
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         mAuth = FirebaseAuth.getInstance();
+        getLocation();
+
 
         binding.emailCreateAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createAccount(binding.fieldEmail.getText().toString(), binding.fieldPassword.getText().toString());
+                String passhashed = SHA256HashAlgorithm.hash(binding.fieldPassword.getText().toString());
+                Log.d("Hashed Passsword", passhashed);
+                createAccount(binding.fieldEmail.getText().toString(), passhashed);
 
             }
         });
@@ -50,7 +80,13 @@ public class Login extends AppCompatActivity {
         binding.emailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn(binding.fieldEmail.getText().toString(), binding.fieldPassword.getText().toString());
+                String hashed = SHA256HashAlgorithm.hash("2131212");
+                Log.d("Input: " , "2131212");
+                Log.d("Hashed: " , hashed);
+
+                String passhashed = SHA256HashAlgorithm.hash(binding.fieldPassword.getText().toString());
+                Log.d("Hashed Passsword", passhashed);
+                signIn(binding.fieldEmail.getText().toString(), passhashed);
 
             }
         });
@@ -83,8 +119,9 @@ public class Login extends AppCompatActivity {
     // [END on_start_check_user]
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            binding.status.setText(getString(R.string.emailpassword_status_fmt,
-                    user.getEmail(), user.isEmailVerified()));
+            //binding.status.setText(getString(R.string.emailpassword_status_fmt,
+                    //user.getEmail(), user.isEmailVerified()));
+            binding.status.setText(getDeviceID());
             binding.emailPasswordButtons.setVisibility(View.GONE);
             binding.emailPasswordFields.setVisibility(View.GONE);
             binding.signOutButton.setVisibility(View.VISIBLE);
@@ -94,60 +131,144 @@ public class Login extends AppCompatActivity {
             binding.goToAppButton.setVisibility(View.VISIBLE);
         }
         else {
-            binding.status.setText(R.string.signed_out);
+            //binding.status.setText(R.string.signed_out);
+            binding.status.setText(getDeviceID());
             binding.emailPasswordButtons.setVisibility(View.VISIBLE);
             binding.emailPasswordFields.setVisibility(View.VISIBLE);
             binding.signOutButton.setVisibility(View.GONE);
             binding.verButton.setVisibility(View.GONE);
             binding.goToAppButton.setVisibility(View.GONE);
         } }
+    private LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+
+            Latitude = location.getLatitude();
+            Longitude = location.getLongitude();
+
+            locationManager.removeUpdates(locationListener);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+    };
+    private void FileWrite(){
+        File file = new File(getFilesDir(), "user_location.txt");
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.write("User: " + currentUserEmail + "\n");
+            writer.write("Latitude: " + Latitude + "\n");
+            writer.write("Longitude: " + Longitude + "\n");
+            writer.close();
+            Log.d("!!!!!!!!", String.valueOf(Latitude));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void createAccount(String email, String password) {
         Log.d(TAG, "createAccount:" + email);
-
-        // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            currentUserEmail = user.getEmail(); // Сохраняем email зарегистрированного пользователя
                             updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure");
-                            Toast.makeText(Login.this, "Authentication Failed.",Toast.LENGTH_SHORT).show();
-                            updateUI(null);
-                        } }
-                });
 
+                            getLocation();
+                            DBHelper db = new DBHelper(getApplicationContext());
+                            db.addLocationData(user.getEmail(), Latitude, Longitude);
+                            Log.d("Current lat!!", String.valueOf(Latitude));
+                            Log.d("Current long", String.valueOf(Longitude));
+
+                        } else {
+                            Log.w(TAG, "createUserWithEmail:failure");
+                            Toast.makeText(Login.this, "Authentication Failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            updateUI(null);
+                        }
+                    }
+                });
     }
+
+    private void getLocation() {
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+    }
+
+
+
+
+
     private void signIn(String email, String password) {
         Log.d(TAG, "signIn:" + email);
-// [START sign_in_with_email]
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's
                     Log.d(TAG, "signInWithEmail:success");
                     FirebaseUser user = mAuth.getCurrentUser();
-                    updateUI(user);
+
+                    Log.d("user,getEmail", String.valueOf(user.getEmail()));
+                    getLocation();
+
+                    if (checkLocation(user.getEmail())) {
+
+                        updateUI(user);
+                    } else {
+                        Toast.makeText(Login.this, "Authentication Failed. User is not at the registered location.",
+                                Toast.LENGTH_SHORT).show();
+                        updateUI(null);
+                    }
                 }
                 else {
-// If sign in fails, display a message to the user. Log.w(TAG, "signInWithEmail:failure", task.getExcep-
                     Toast.makeText(Login.this, "Authentication Failed",
-                            Toast.LENGTH_SHORT).show(); updateUI(null);
+                            Toast.LENGTH_SHORT).show();
+                    updateUI(null);
                 }
-                // [START_EXCLUDE]
-                if (!task.isSuccessful()) {
-                    binding.status.setText(R.string.auth_failed); }
-                // [END_EXCLUDE]
             }
         });
-        // [END sign_in_with_email]
+    }
+
+
+    private boolean checkLocation(String email) {
+        DBHelper db = new DBHelper(getApplicationContext());
+        double[] val = db.getLocationDataByLogin(email);
+        if (distanceMatches(val[0], val[1])) {
+            return true;
+        } else {
+            return false;
+        }
+
+
+    }
+
+
+    private boolean distanceMatches(double lat, double lng) {
+
+        Log.d("Current lat!!", String.valueOf(Latitude));
+        Log.d("Current long", String.valueOf(Longitude));
+        Log.d("Registrated Lat!!", String.valueOf(lat));
+        Log.d("Registrated Long", String.valueOf(lng));
+
+        return Math.abs(lat - Latitude) < 0.001 && Math.abs(lng - Longitude) < 0.001;
     }
 
     private void signOut() {
@@ -155,20 +276,24 @@ public class Login extends AppCompatActivity {
         updateUI(null);
     }
 
+    public String getDeviceID() {
+        String id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        return id;
+    }
+
     private void sendEmailVerification() {
-// Disable button binding.verifyEmailButton).setEnabled(false);
-// Send verification email
-// [START send_email_verification]
+
         final FirebaseUser user = mAuth.getCurrentUser();
         Objects.requireNonNull(user).sendEmailVerification()
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) { // [START_EXCLUDE]
-// Re-enable button
+
                         binding.verButton.setEnabled(true);
                         if (task.isSuccessful()) { Toast.makeText(Login.this,
                                 "Verification email sent to " + user.getEmail(), Toast.LENGTH_SHORT).show();
-                        } else {
+                        }
+                        else {
                             Log.e(TAG, "sendEmailVerification", task.getException());
                             Toast.makeText(Login.this,
                                     "Failed to send verification email.", Toast.LENGTH_SHORT).show();
@@ -179,3 +304,5 @@ public class Login extends AppCompatActivity {
     }
 
 }
+
+
